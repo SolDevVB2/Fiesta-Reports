@@ -1,0 +1,732 @@
+﻿
+@{
+    ViewBag.Title = "ManageEmployee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            position: relative;
+            padding-top: 70px;
+        }
+
+        #Current1 {
+            padding-top: 50px;
+            height: 850px;
+            color: #fff;
+            background-color: #1E88E5;
+        }
+
+        #Past1 {
+            padding-top: 50px;
+            height: 850px;
+            color: #fff;
+            background-color: #673ab7;
+        }
+
+        #New1 {
+            padding-top: 150px;
+            height: 850px;
+            color: #fff;
+            /*background-color: #ff9800;*/
+        }
+
+        #registerurl {
+            padding-left: 325px;
+            padding-top: 275px;
+            font-size: x-large;
+        }
+
+        #RSLink {
+            color: #fff;
+        }
+
+        #reportLink {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+    <div class="container">
+        <nav class="navbar navbar-inverse navbar-fixed-bottom" style="padding-left: 1150px ">
+            <div class="container-fluid">
+                <div>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="#Current1">Current</a></li>
+                            <li><a href="#Past1">Past</a></li>
+                            <li><a href="#New1">New</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+
+
+        <div id="Current1" class="container-fluid">
+            <h4>Current Employees</h4>
+            <button type="button" class="btn btn-info btn-link " id="RSLink">Edit Role&Store</button>
+            <button type="button" class="btn btn-info btn-link " id="reportLink">Edit Reports Assigned</button>
+        </div>
+        <div id="Past1" class="container-fluid">
+            <h1>Previous employees</h1>
+
+        </div>
+        <div id="New1" class="container-fluid">
+            <a href="@Url.Action("RegisterEmployee", "Account")" id="registerurl" class="visible-lg-inline">Want to add a New Employee?.</a>
+        </div>
+
+
+        @*This is modal for editing the Role, State and Stores*@
+        <div class="modal fade" id="myModalRS" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit Either Role / Store</h4>
+                    </div>
+                    <div class="modal-body" style="padding:20px 80px;">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                @*<div style="float:left"><div><label for="email">Email</label></div><input type="text" class="form-control" id="lnametext" disabled style="width:300px"></div>*@
+                                <div style="float:left; margin-left:150px"><div><label for="fillname">Name</label></div><input type="text" class="form-control" id="lnametext" disabled style="width:300px ;"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <div><label for="role">Employee Role</label></div>
+
+                                <div id="dvRoles">
+                                </div>
+                            </div>
+                            <div id="dvSection">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="state">State</label>
+                                    </div>
+
+                                    <div style="float:left">
+                                        <select multiple class="form-control" id="dlStates1" style="height:75px; width:300px"></select>
+                                    </div>
+                                    <div style="float:left ; width:80px; margin:25px 30px 25px 40px;">
+                                        <button type="button" id="btnStNext" style="width:35px" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></button>
+                                        <button type="button" id="btnStPrevious" style="width:35px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                                    </div>
+                                    <div style="float:left">
+                                        <select multiple class="form-control" id="dlStates2" style="height:75px;  width:300px"></select>
+                                        `
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div><label for="report">Store</label></div>
+                                    <div style="float:left">
+                                        <select multiple class="form-control" id="dlStoresLeft" style="height:150px; width:300px"></select>
+                                    </div>
+                                    <div style="float:left ; width:80px ; margin:45px 30px 45px 40px;">
+                                        <button type="button" id="btnStoNext" style="width:35px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></button>
+                                        <button type="button" id="btnStoPrevious" style="width:35px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                                    </div>
+                                    <div style="float:left">
+                                        <select multiple class="form-control" id="dlStoresRight" style="height:150px; width:300px"></select>
+                                        `
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnAssign">Save changes</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        @*This is the modal to edit Reports assigned to each Employee*@
+        <div class="modal fade" id="myModalReport" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit Reports Assigned</h4>
+                    </div>
+                    <div class="modal-body" style="padding:20px 80px;">
+                        <form class="form-horizontal">
+                            @*<div class="form-group">
+                                    <div style="float:left"><div><label for="email">Email</label></div><input type="text" class="form-control" id="lnametext" disabled style="width:300px"></div>
+                                </div>*@
+                            <div class="form-group">
+                                <div style="float:left;"><div><label for="fillname">Name</label></div><input type="text" class="form-control" id="lnametext1" disabled style="width:300px ;"></div>
+                            </div>
+                            <div class="form-group">
+                                <div style="float:left">
+                                    <div><label for="report">Store</label></div>
+                                    <div><select multiple class="form-control" id="dlStores1" style="height:75px; width:300px"></select></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div style="float:left">
+                                    <div><label for="role">Reports Accessble</label></div>
+                                    <div id="dvReports"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnAssignReports">Save changes</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="confirm" class="modal hide fade">
+            <div class="modal-body">
+                <label id="lblconfirm"> Are you sure want to delete existing reports for selected stores? </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="delete">Delete</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var EmpId = 0;
+        function RoleChange(val) {
+            /***   Role selection change event ***/
+            if (val == 1)
+                $('#dvSection').hide();
+            else
+                $('#dvSection').show();
+        }
+        $(document).ready(function () {
+            /***   Page Load Event ***/
+
+            $("#RSLink").click(function () {
+                /***   Showup employee details in popup ***/
+
+                LoadEmpStores('accowner@fiestafranchise.com');
+                $("#myModalRS").modal();
+            });
+            $("#reportLink").click(function () {
+                /***   Showup employee details in popup ***/
+
+                LoadEmpReports('accowner@fiestafranchise.com');
+                $("#myModalReport").modal();
+
+            });
+
+            /***   Returns All the Role types ***/
+            $.ajax({
+                url: "@Url.Action("GetRoles", "Account")",
+                dataType: "json",
+                type: "GET",
+                error: function () {
+                },
+                success: function (data) {
+                    $.each(data, function (i) {
+                        var optionhtml = '<label class="radio-inline">' +
+                                     '<input type="radio" name="optradio" class="cls_Roles" onclick="RoleChange(' + data[i].RoleId + ')" value="' + data[i].RoleId + '">' + data[i].RoleName + '</label>';
+                        $("#dvRoles").append(optionhtml);
+                    });
+                }
+            });
+
+
+            /***  Returns all the Reports Types ***/
+            $.ajax({
+                url: "@Url.Action("GetReports", "Account")",
+                dataType: "json",
+                type: "GET",
+                error: function () {
+                },
+                success: function (data) {
+                    $.each(data, function (i) {
+                        var optionhtml = '<label class="checkbox-inline">' +
+                                     '<input type="checkbox" class="cls_Report" value="' + data[i].ReportId + '">' + data[i].ReportName + '</label>';
+                        $("#dvReports").append(optionhtml);
+                    });
+                }
+            });
+
+
+
+            /***   Returns All the States ***/
+            $.ajax({
+                url: "@Url.Action("GetStates", "Account")",
+                dataType: "json",
+                type: "GET",
+                error: function () {
+                },
+                success: function (data) {
+
+
+                    $.each(data, function (i) {
+
+                        var optionhtml = '<option value="' +
+                    data[i].Value + '">' + data[i].Text + '</option>';
+                        $("#dlStates1").append(optionhtml);
+                    });
+                }
+            });
+
+            $("#btnStNext").click(function () {
+                /***   States selection event ***/
+
+                var selectedOpts = $('#dlStates1 option:selected');
+                if (selectedOpts.length > 0) {
+                    $('#dlStates2').append($(selectedOpts).clone());
+                    $(selectedOpts).remove();
+                    rearrangeList("#dlStates2");
+                    ReloadStores(0, null);
+                }
+
+            });
+
+            $('#btnStPrevious').click(function (e) {
+                /***   States removal event ***/
+
+                var selectedOpts = $('#dlStates2 option:selected');
+                if (selectedOpts.length > 0) {
+                    $('#dlStates1').append($(selectedOpts).clone());
+                    $(selectedOpts).remove();
+                    rearrangeList("#dlStates1");
+                    $(selectedOpts).each(function () {
+                        var obj = {
+                            EmpId: 0,
+                            States: $(this).val()
+                        }
+                        console.log(obj);
+                        $.ajax({
+                            url: "@Url.Action("GetStores", "Account")",
+                            dataType: "json",
+                            data: obj,
+                            type: "POST",
+                            error: function () {
+                            },
+                            success: function (data) {
+
+                                $.each(data, function (i) {
+                                    if ($("#dlStoresRight option[value='" + data[i].storeNo + "']").length > 0) {
+                                        jQuery("#dlStoresRight option").filter(function () {
+                                            return $.trim($(this).val()) == data[i].storeNo
+                                        }).remove();
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    ReloadStores(0, null);
+
+                }
+
+            });
+
+
+            $("#btnStoNext").click(function () {
+                /***   Stores selection event ***/
+
+                var selectedOpts = $('#dlStoresLeft option:selected');
+                if (selectedOpts.length > 0) {
+                    $('#dlStoresRight').append($(selectedOpts).clone());
+                    $(selectedOpts).remove();
+                    rearrangeList("#dlStoresRight");
+                }
+
+            });
+
+            $('#btnStoPrevious').click(function (e) {
+                /***   Stores removal event ***/
+
+                var selectedOpts = $('#dlStoresRight option:selected');
+                if (selectedOpts.length > 0) {
+                    $('#dlStoresLeft').append($(selectedOpts).clone());
+                    $(selectedOpts).remove();
+                    rearrangeList("#dlStoresLeft");
+                }
+
+            });
+
+
+
+
+
+
+
+            $("#btnAssign").click(function () {
+                /***   Assigning States, Stores and Role to Employee ***/
+                var roleId = 0;
+                $('.cls_Roles').each(function () {
+
+                    if ($(this).prop('checked') == true) {
+                        roleId = $(this).val();
+                    }
+
+                });
+                var str_States = "";
+                var str_Stores = "";
+                $("#dlStates2 option").each(function () {
+                    if (str_States == "")
+                        str_States = $(this).val();
+                    else
+                        str_States += "," + $(this).val();
+                });
+                $("#dlStoresRight option").each(function () {
+                    if (str_Stores == "")
+                        str_Stores = $(this).val();
+                    else
+                        str_Stores += "," + $(this).val();
+                });
+                if (roleId == 0) {
+                    $("#dvRoles").addClass('Red-border');
+                }
+                else {
+                    $("#dvRoles").removeClass('Red-border');
+                }
+                if (EmpId > 0 && ((str_Stores != '' && str_States != '') || roleId == 1) && roleId > 0) {
+                    var obj = {
+                        EmployeeId: EmpId,
+                        RoleId: roleId,
+                        States: str_States,
+                        Stores: str_Stores
+                    }
+                    console.log(obj);
+                    $.ajax({
+                        url: "@Url.Action("AssignEmployee", "Account")",
+                        data: obj,
+                        dataType: "json",
+                        type: "POST",
+                        error: function () {
+                        },
+                        success: function (data) {
+                            $('#myModalRS').modal('hide');
+
+                        }
+                    });
+                }
+
+            });
+
+
+
+
+            //---------------------------
+
+
+
+
+
+            $("#btnAssignReports").click(function () {
+                /***   Assigning Reports to  Employee ***/
+
+                $('#dlStores1').removeClass('Red-border');
+                $('#dvReports').removeClass('Red-border');
+                var Reports = [];
+                $('.cls_Report').each(function () {
+
+                    if ($(this).prop('checked') == true) {
+                        Reports.push($(this).val());
+                    }
+
+                });
+                console.log(EmpId);
+                console.log($("#dlStores1").val());
+                console.log(Reports);
+                if (EmpId > 0 && $("#dlStores1").val() != '') {
+                    if (Reports.length > 0) {
+                        var obj = {
+                            EmployeeId: EmpId,
+                            lstStores: $("#dlStores1").val(),
+                            lstReports: Reports
+                        }
+                        console.log(obj);
+                        $.ajax({
+                            url: "@Url.Action("AssignReports", "Account")",
+                            data: obj,
+                            dataType: "json",
+                            type: "POST",
+                            error: function () {
+                            },
+                            success: function (data) {
+                                $('#myModalReport').modal('hide');
+
+                            }
+                        });
+                    }
+                    else {
+                        var stores = $("#dlStores1").val();
+                        if (confirm('Are you sure want to delete existing reports for ' + stores)) {
+                            var obj = {
+                                EmployeeId: EmpId,
+                                lstStores: $("#dlStores1").val(),
+                                lstReports: Reports
+                            }
+                            console.log(obj);
+                            $.ajax({
+                                url: "@Url.Action("AssignReports", "Account")",
+                                data: obj,
+                                dataType: "json",
+                                type: "POST",
+                                error: function () {
+                                },
+                                success: function (data) {
+                                    $('#myModalReport').modal('hide');
+
+                                }
+                            });
+                        }
+                    }
+                }
+                else {
+                    if ($("#dlStores1").val() == '')
+                        $('#dlStores1').addClass('Red-border');
+                }
+
+            });
+
+
+        });
+        function LoadEmpReports(email) {
+            /***   Loads assigned reports of employee  ***/
+
+            $('#dlStores1').removeClass('Red-border');
+            $('#dvReports').removeClass('Red-border');
+            $('.cls_Report').each(function () {
+                $(this).prop('checked', false);
+
+            });
+
+
+
+            if (email != '') {
+                var obj = { Email: email }
+                $.ajax({
+                    url: "@Url.Action("GetEmployeeByEmail", "Account")",
+                    data: obj,
+                    dataType: "json",
+                    type: "POST",
+                    error: function () {
+                        EmpId = 0;
+                    },
+                    success: function (data) {
+                        $("#dlStores1").html('');
+                        if (data != null) {
+                            if (data.EmpDetails != null) {
+                                if (data.EmpDetails.FirstName != null) {
+                                    $('#lnametext1').val(data.EmpDetails.FirstName + " " + data.EmpDetails.LastName);
+                                    EmpId = data.EmpDetails.EmpId;
+                                    $.ajax({
+                                        url: "@Url.Action("GetEmployeeStores", "Account")" + "?EmpId=" + EmpId,
+                                        data: obj,
+                                        dataType: "json",
+                                        type: "POST",
+                                        error: function () {
+                                            EmpId = 0;
+                                        },
+                                        success: function (data) {
+                                            $.each(data, function (i) {
+
+                                                var optionhtml = '<option value="' +
+                                            data[i].storeNo + '">' + data[i].Store + '</option>';
+                                                $("#dlStores1").append(optionhtml);
+                                            });
+                                        }
+                                    });
+                                }
+
+
+                            }
+
+
+                        }
+
+                    }
+                });
+            }
+        }
+
+        function LoadEmpStores(email) {
+            /***   Loads assigned Stores of Employee ***/
+
+            if (email != '') {
+                $("#dlStates2").html('');
+
+                var obj = { Email: email }
+                $.ajax({
+                    url: "@Url.Action("GetEmployeeByEmail", "Account")",
+                    data: obj,
+                    dataType: "json",
+                    type: "POST",
+                    error: function () {
+                        EmpId = 0;
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#dlStoresLeft").html('');
+                        $('.cls_Roles').each(function () {
+
+                            $(this).prop('checked', false);
+
+                        });
+                        if (data != null) {
+                            if (data.EmpDetails != null) {
+                                if (data.EmpDetails.FirstName != null) {
+                                    //  $('#fnametext').val(data.EmpDetails.FirstName);
+                                    $('#lnametext').val(data.EmpDetails.FirstName + " " + data.EmpDetails.LastName);
+                                    EmpId = data.EmpDetails.EmpId;
+                                    if (data.EmpDetails.RoleId != null) {
+                                        $('.cls_Roles').each(function () {
+
+                                            if ($(this).val() == data.EmpDetails.RoleId) {
+                                                $(this).prop('checked', true);
+                                            }
+
+                                        });
+                                    }
+                                    if (data.lstStates != null) {
+                                        $.each(data.lstStates, function (i) {
+
+                                            var optionhtml = '<option value="' +
+                                        data.lstStates[i].Value + '">' + data.lstStates[i].Text + '</option>';
+                                            $("#dlStates2").append(optionhtml);
+                                            jQuery("#dlStates1 option").filter(function () {
+                                                return $.trim($(this).val()) == data.lstStates[i].Value
+                                            }).remove();
+                                        });
+                                        ReloadStores(1, data);
+                                    }
+
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                });
+            }
+        };
+        function rearrangeList(list) {
+            $(list).find("option").sort(byValue).appendTo(list);
+        }
+        function byValue(a, b) {
+            return a.text > b.text ? 1 : -1;
+        };
+
+        function ReloadStores(flag, objdata) {
+            /***   Reload Stores after assigning done ***/
+
+            $("#dlStoresLeft").html('');
+            var str_States = "";
+            $("#dlStates2 option").each(function () {
+                if (str_States == "")
+                    str_States = $(this).val();
+                else
+                    str_States += "," + $(this).val();
+            });
+            if (str_States != "") {
+                var obj = {
+                    EmpId: EmpId,
+                    States: str_States
+                }
+                console.log(obj);
+                $.ajax({
+                    url: "@Url.Action("GetStores", "Account")",
+                    dataType: "json",
+                    data: obj,
+                    type: "POST",
+                    error: function () {
+                    },
+                    success: function (data) {
+
+                        $.each(data, function (i) {
+                            if ($("#dlStoresRight option[value='" + data[i].storeNo + "']").length == 0) {
+                                var optionhtml = '<option value="' +
+                            data[i].storeNo + '">' + data[i].Store + '</option>';
+                                $("#dlStoresLeft").append(optionhtml);
+                            }
+                        });
+                        if (flag == 1) {
+                            $("#dlStoresRight").html('');
+                            console.log(objdata.lstStores);
+                            if (objdata.lstStores != null) {
+                                $.each(objdata.lstStores, function (i) {
+
+                                    var optionhtml = '<option value="' +
+                                objdata.lstStores[i].storeNo + '">' + objdata.lstStores[i].Store + '</option>';
+                                    $("#dlStoresRight").append(optionhtml);
+                                    jQuery("#dlStoresLeft option").filter(function () {
+                                        return $.trim($(this).val()) == objdata.lstStores[i].storeNo
+                                    }).remove();
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+
+
+        }
+
+        function ValidateRegister() {
+            /***   Validaing Registration fields of employee ***/
+
+            var flag = true;
+            $('.register').each(function (i, obj) {
+                if ($(this).val() == '') {
+                    flag = false;
+                    $(this).addClass('Red-border');
+                }
+                else {
+                    $(this).removeClass('Red-border');
+                }
+            });
+            if ($('#password').val().length < 5) {
+                flag = false;
+                $('#password').addClass('Red-border');
+            }
+            else {
+                $('#password').removeClass('Red-border');
+            }
+            if ($('#password').val() != $('#confirmpassword').val()) {
+                flag = false;
+                $('#confirmpassword').addClass('Red-border');
+            }
+            if ($('#emailEmployee').val() != '') {
+                var pattern1 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestainsurance.com$");
+                var pattern2 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestafranchise.com$");
+                if ($('#emailEmployee').val().match(pattern1) || $('#emailEmployee').val().match(pattern2)) {
+                    // ... email is valid
+                    $('#emailEmployee').removeClass('Red-border');
+                } else {
+                    flag = false;
+                    $('#emailEmployee').addClass('Red-border');
+                }
+            }
+            return flag;
+        }
+
+    </script>
+
+
+</body>
+</html>

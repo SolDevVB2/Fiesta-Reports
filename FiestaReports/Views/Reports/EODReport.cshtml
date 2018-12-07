@@ -1,0 +1,54 @@
+﻿
+
+<link href="~/Content/KendoUI/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/KendoUI/styles/kendo.black.min.css" rel="stylesheet" />
+<link href="~/Content/KendoUI/styles/kendo.rtl.min.css" rel="stylesheet" />
+<script src="~/Content/KendoUI/js/jszip.min.js"></script>
+<script src="~/Content/KendoUI/js/kendo.all.min.js"></script>
+<script src="~/Scripts/Reports/EODReport.js"></script>
+<style>
+    .k-grid td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+<div id="example">
+    <br />
+    <h2>EOD Report</h2>
+    <br />
+    <div class="row">
+        <div class="col-md-2">
+            <label>Start Date</label>
+            <input id="startDate" value="@ViewBag.SOM" title="datepicker" />
+        </div>
+        <div class="col-md-2">
+            <label>End Date</label>
+            <input id="endDate" value="@ViewBag.EOM" title="datepicker" />
+        </div>
+        <div class="col-md-2">
+            <br />
+            <button class="btn btn-block btn-primary" onclick="javascript: SetDateRage('@ViewBag.SOM','@ViewBag.EOM')">
+                <i class="glyphicon glyphicon-filter"></i> This Month
+            </button>
+        </div>
+        <div class="col-md-2">
+            <br />
+            <button class="btn btn-block btn-primary" onclick="javascript: SetDateRage('@ViewBag.SOW','@ViewBag.EOW')">
+                <i class="glyphicon glyphicon-filter"></i> This Week
+            </button>
+        </div>
+        <div class="col-md-2">
+            <br />
+            <button class="btn btn-block btn-primary" onclick="javascript: SetDateRage('@ViewBag.Today','@ViewBag.Today')">
+                <i class="glyphicon glyphicon-filter"></i>  Today
+            </button>
+        </div>
+    </div>
+
+    <br />
+    <div id="grid"></div>
+    <br />
+    <br />
+    <div id="bar-chart-proto"></div>
+    <br />
+</div>

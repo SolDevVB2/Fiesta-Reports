@@ -1,0 +1,5 @@
+Store,ReconType,TransactionDate,InternalReference,Narrative,ExternalReference,Amount
+CA001,AR-Short Premium,27-Jul-18,OTHER REFERENCE: IA000010426895Infinity Insuran Upload     Jul 27 Serna0104548984 Serna. Sandro 104600717126001,Receipt 115 Swept 115.08,,$0.08,Open
+CA001,AR-Credit Card not processed,24-Jul-18,104645485850001,void req,PRECIADO JUAN,$107.17,Closed
+CA001,AR-Credit Card not processed,17-Jul-18,MIL3819554,receipt created late,VAZQUEZ ARMANDO,$55.00,Closed
+CA001,AR-Credit Card not processed,9-Jul-18,MIL3948119,Receipt Created Late,SANTOS CORREA ALEJANDRO,$55.00,Closed

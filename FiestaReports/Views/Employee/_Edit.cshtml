@@ -1,0 +1,298 @@
+﻿
+@model FiestaReports.Models.Fiesta_Employee
+@{
+    bool hasValue = string.IsNullOrEmpty(ViewBag.Message);
+    bool isActive = Model.IsActive.HasValue ? Model.IsActive.Value == true ? true : false : false;
+}
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit user information</h4>
+    </div>
+    <div class="modal-body">
+        <div id="tabs">
+            <ul class="nav nav-tabs">
+                <li class="active" onclick="javascript: renderTab(1);"><a data-toggle="tab" href="#tab-1">User info</a></li>
+                <li onclick="javascript: renderTab(2);"><a data-toggle="tab" href="#tab-2">Password</a></li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div id="tab-1" class="tab-pane fade in active">
+                @using (Html.BeginForm("_Edit", "Employee", FormMethod.Post, new { @Id = "frmEditEmployee" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("hdnRoleId", Model.RoleId)
+                    <div class="form-horizontal">
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.EmpId, new { @id = "employeeId" })
+                        @{if (!hasValue)
+                            {
+                                <span class="text-danger">There is something wrong, try again later.</span>
+                            }
+                        }
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FirstName, "Firstname", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control editUser" } })
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 text-right">
+                                <label for="role" class="control-label">Employee Role</label>
+                            </div>
+                            <div id="divRoles" class="col-md-4">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.LastName, "Lastname", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control editUser" } })
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.EmailAddress, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control editUser" } })
+                                @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IsActive, "Is active", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4">
+                                <div class="checkbox">
+                                    @Html.CheckBox("chkIsActive", isActive)
+                                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                                    }
+            </div>
+            <div id="tab-2" class="tab-pane fade">
+                @using (Html.BeginForm("_EditPassword", "Employee", FormMethod.Post, new { @Id = "frmResetPasswor" }))
+                {
+                    <div class="form-horizontal">
+                        <hr />
+                        <div class="form-group">
+                            @Html.Label("lblPassword", "Password", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.Password("txtPassword", "", new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("lblConfirmPass", "Confirm password", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.Password("txtConfirmPass", "", new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10 text-center">
+                                <strong> Password has to be minimum 5 characters in length.</strong>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @*<div class="col-md-offset-2 col-md-10">
+                                <input type="button" id="btnResetPass" value="Reset password" class="btn btn-primary" />
+                                </div>*@
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        @{if (hasValue)
+            {
+                <input type="button" id="btnDeleteUser" value="Delete" class="btn btn-danger" style="float:left;" />
+            }
+        }
+        @{if (hasValue)
+            {
+                <input type="button" id="btnEditUser" value="Save" class="btn btn-primary" />
+            }
+        }
+        <input type="button" id="btnResetPass" value="Reset password" class="btn btn-primary" style="display:none;" />
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+
+</div>
+    <script type="text/javascript">
+        function ValidateUser() {
+            var flag = true;
+            $('.editUser').each(function (i, obj) {
+                if ($(this).val() == '') {
+                    flag = false;
+                    $(this).addClass('Red-border');
+                }
+                else {
+                    $(this).removeClass('Red-border');
+                }
+            });
+        if ($('#EmailAddress').val() != '' && $('#EmailAddress').val() != null && $('#EmailAddress').val() != undefined) {
+            var EmailAddress = $('#EmailAddress').val().trim();
+                var pattern1 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestainsurance.com$");
+                var pattern2 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestafranchise.com$");
+            if (EmailAddress.match(pattern1) || $('#EmailAddress').val().match(pattern2)) {
+                    // ... email is valid
+                    $('#EmailAddress').removeClass('Red-border');
+                } else {
+                    flag = false;
+                    $('#EmailAddress').addClass('Red-border');
+                }
+            }
+            return flag;
+        };
+
+        function ValidatePassword() {
+            var flag = true;
+            if ($('#txtPassword').val().length < 5) {
+                flag = false;
+                $('#txtPassword').addClass('Red-border');
+            }
+            else {
+                $('#txtPassword').removeClass('Red-border');
+            }
+            if ($('#txtPassword').val() != $('#txtConfirmPass').val()) {
+                flag = false;
+                $('#txtConfirmPass').addClass('Red-border');
+            }
+            return flag;
+        };
+
+     $(document).ready( function (){
+
+
+         $("#btnEditUser").click(function (event) {
+            var roleId = 0;
+            $('.avRoles').each(function () {
+                if ($(this).prop('checked') == true) {
+                    roleId = $(this).val();
+                }
+            });
+               if (ValidateUser()){
+                   var obj = {
+                       EmpId: $("#employeeId").val(),
+                    RoleId: roleId,
+                       FirstName: $("#FirstName").val(),
+                       LastName: $("#LastName").val(),
+                    EmailAddress: $("#EmailAddress").val().trim(),
+                       IsActive: $("#chkIsActive").is(':checked')
+                   }
+                   $.ajax({
+                       url: "@Url.Action("_Edit", "Employee")",
+                       data: obj,
+                   dataType: "json",
+                   type: "POST",
+                   error: function () {
+                   },
+                   success: function (result) {
+                       $("#step4").modal('hide');
+                       $('#employees').DataTable().ajax.reload();
+                   }
+               });
+            }
+        });
+
+         $('#btnResetPass').click(function (event) {
+             if(ValidatePassword() && confirm("You are about to update the password, Do you want to continue?")) {
+
+                 $.ajax({
+                     url: "@Url.Action("_EditPassword", "Employee")",
+                     data: { pass: $("#txtPassword").val(), empId: $("#employeeId").val() },
+                     dataType: "json",
+                     type: "POST",
+                     error: function () {
+                     },
+                     success: function (result) {
+                         $("#step4").modal('hide');
+                         $('#employees').DataTable().ajax.reload();
+                     }
+                 });
+               }
+         });
+        $.ajax({
+            url: "@Url.Action("GetRoles", "Account")",
+            dataType: "json",
+            type: "GET",
+            error: function () {
+            },
+            success: function (data) {
+                var RoleId = $("#hdnRoleId").val();
+                var optionhtml = '';
+                var IsSelectable = false;
+                for (var i = 0; i < data.AllRoles.length; i++) {
+                    IsSelectable = false;
+                    for (var j = 0; j < data.SelectableRoles.length; j++) {
+                        if(data.AllRoles[i].RoleId ==  data.SelectableRoles[j].RoleId){
+                            IsSelectable = true;
+                            break;
+                        }
+                    }
+                    if(IsSelectable){
+                        if (RoleId != null && RoleId == data.AllRoles[i].RoleId) {
+                            optionhtml = '<label class="radio-inline">' +
+                                                            '<input type="radio" name="optradio" checked="checked"  class="avRoles" onclick="ValidateRol(' + data.AllRoles[i].RoleId + ')" value="' + data.AllRoles[i].RoleId + '">' + data.AllRoles[i].RoleName + '</label>';
+                    
+                        }
+                        else {
+                            optionhtml = '<label class="radio-inline">' +
+                                                            '<input type="radio" name="optradio" class="avRoles" onclick="ValidateRol(' + data.AllRoles[i].RoleId + ')" value="' + data.AllRoles[i].RoleId + '">' + data.AllRoles[i].RoleName + '</label>';
+                        }
+                    }else{
+                        if (RoleId != null && RoleId == data.AllRoles[i].RoleId) {
+                        optionhtml = '<label class="radio-inline">' +
+                                                            '<input type="radio" name="optradio" checked="checked" disabled="disabled" class="avRoles" onclick="ValidateRol(' + data.AllRoles[i].RoleId + ')" value="' + data.AllRoles[i].RoleId + '">' + data.AllRoles[i].RoleName + '</label>';
+                    }
+                    else {
+                        optionhtml = '<label class="radio-inline">' +
+                                                            '<input type="radio" name="optradio" class="avRoles" disabled="disabled" onclick="ValidateRol(' + data.AllRoles[i].RoleId + ')" value="' + data.AllRoles[i].RoleId + '">' + data.AllRoles[i].RoleName + '</label>';
+                        }
+                    }
+                    $("#divRoles").append(optionhtml);
+                }
+            }
+        });
+    });
+
+    $("#btnDeleteUser").click(function (event) {
+        if (confirm("WARNING \n\r This action cannot be Undone \n\r Are you sure you want to DELETE the Selected USER?")) {
+            $.ajax({
+                url: "@Url.Action("DeleteUser", "Employee")",
+                data: { empId: $("#employeeId").val() },
+                dataType: "json",
+                type: "GET",
+                error: function () {
+                },
+                success: function (result) {
+                    $("#step4").modal('hide');
+                    $('#employees').DataTable().ajax.reload();
+                }
+            });
+        }
+    });
+    function renderTab(tabNo) {
+        switch (tabNo) {
+            case 1:
+                $("#btnEditUser").show();
+                $("#btnDeleteUser").show();
+                $("#btnResetPass").hide();
+                break;
+            case 2:
+                $("#btnResetPass").show();
+                $("#btnEditUser").hide();
+                $("#btnDeleteUser").hide();
+                break;
+        }
+    }
+    </script>

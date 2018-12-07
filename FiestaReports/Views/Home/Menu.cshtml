@@ -1,0 +1,122 @@
+﻿<div class="container">
+    <div class="col-xs-6">
+        @if (ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.National ||
+                    ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.Accounting ||
+                    ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.Owner ||
+                    ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.Manager)
+        {
+            <h2 class="sub-header">Reports</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="col-md-6">List of Reports</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-md-12">
+                                <div class="btn-group btn-group-justified">
+                                    <a href="@Url.Action("RPReport", "Reports")" class="btn btn-info">RP Reports</a>
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td class="col-md-6">
+                                <div class="btn-group btn-group-justified">
+                                    <a href="@Url.Action("ARReport", "Reports")" class="btn btn-info">AR Reports</a>
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn-group btn-group-justified">
+                                    <a href="@Url.Action("ReconReport", "Reports")" class="btn btn-info">Recon Reports</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn-group btn-group-justified">
+                                    <a href="@Url.Action("DDReport", "Reports")" class="btn btn-info">DD Reports</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn-group btn-group-justified">
+                                    <a href="@Url.Action("CommissionsReport", "Reports")" class="btn btn-info">Commissions Report</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="btn-group btn-group-justified">
+                                    <a href="@Url.Action("EFTReport", "Reports")" class="btn btn-info">EFT Reports</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+    <div class="col-xs-6">
+        @if (ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.National ||
+             ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.Accounting ||
+             ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.Owner )
+        {
+
+            <h2 class="sub-header">Admin Tasks</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="col-md-1">List of Tasks</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="col-md-1">
+                                <div class="btn-group btn-group-justified">
+                                    <a href="@Url.Action("ManageEmployee", "Employee")" class="btn btn-info">Manage Users</a>
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        @if (ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.National ||
+                             ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.Accounting)
+                        {
+
+                            <tr>
+                                <td class="col-md-1">
+                                    <div class="btn-group btn-group-justified">
+                                        <a href="@Url.Action("UploadExcel", "Upload")" class="btn btn-info">Upload Excel</a>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                        @if (ViewBag.RoleId == (int)FiestaReports.Utils.UserTypeEnum.National )
+                        {
+                            <tr>
+                                <td class="col-md-1">
+                                    <div class="btn-group btn-group-justified">
+                                        <a href="@Url.Action("ManageStores", "Store")" class="btn btn-info">Manage Stores</a>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

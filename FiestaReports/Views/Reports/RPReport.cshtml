@@ -1,0 +1,101 @@
+﻿<link href="~/Content/KendoUI/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/KendoUI/styles/kendo.black.min.css" rel="stylesheet" />
+<link href="~/Content/KendoUI/styles/kendo.rtl.min.css" rel="stylesheet" />
+<script src="~/Content/KendoUI/js/jszip.min.js"></script>
+<script src="~/Content/KendoUI/js/kendo.all.min.js"></script>
+<script src="~/Scripts/Reports/RPReport.js"></script>
+<script type="text/javascript">
+    var UserRole = '@ViewBag.UserRole';
+</script>
+<script src="~/Scripts/Reports/RPReport.js"></script>
+<style>
+    .k-grid td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .k-widget.k-datepicker.k-header.dtpicker {
+        width: 120px;
+    }
+</style>
+<div id="example">
+    <br />
+    <h2>RP Report</h2>
+    <br />
+    <div class="row">
+        <div class="col-md-2">
+            <label>Start Date</label>
+            <input id="startDate" value="@ViewBag.SOM" title="datepicker" />
+        </div>
+        <div class="col-md-2">
+            <label>End Date</label>
+            <input id="endDate" value="@ViewBag.EOM" title="datepicker" />
+        </div>
+        <div class="col-md-2">
+            <br />
+            <button class="btn btn-block btn-primary" onclick="javascript: Page.Filters.SetDateRage('@ViewBag.SOM','@ViewBag.EOM')">
+                <i class="glyphicon glyphicon-filter"></i> This Month
+            </button>
+        </div>
+        <div class="col-md-2">
+            <br />
+            <button class="btn btn-block btn-primary" onclick="javascript: Page.Filters.SetDateRage('@ViewBag.SOW','@ViewBag.EOW')">
+                <i class="glyphicon glyphicon-filter"></i> This Week
+            </button>
+        </div>
+        <div class="col-md-2">
+            <br />
+            <button class="btn btn-block btn-primary" onclick="javascript: Page.Filters.SetDateRage('@ViewBag.SLM','@ViewBag.ELM')">
+                <i class="glyphicon glyphicon-filter"></i>  Last Month
+            </button>
+        </div>
+        <div class="col-md-2">
+            <br />
+            @if (ViewBag.UserRole == 1 || ViewBag.UserRole == 2)
+            {
+                <button class="btn btn-block btn-warning" onclick="javascript: Page.ReportGrid.Manage();">
+                    <i class="glyphicon glyphicon-pencil"></i>  Manage Data
+                </button>
+            }
+        </div>
+    </div>
+    <div id="ManageDataControls" style="display:none">
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                <h3>Selected Rows</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <br />
+            </div>
+            <div class="col-md-2">
+                @if (ViewBag.UserRole == 1)
+                {
+                    <br />
+                    <button class="btn btn-block btn-danger" onclick="javascript: Page.StagingGrid.DeleteAll()">
+                        <i class="glyphicon glyphicon-trash"></i>  Delete Data
+                    </button>
+                }
+            </div>
+            <div class="col-md-2">
+                <br />
+                <button class="btn btn-block btn-success" onclick="javascript: Page.StagingGrid.SaveAll()">
+                    <i class="glyphicon glyphicon-floppy-save"></i>  Save Edited Data
+                </button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="stagingGrid"></div>
+    <hr />
+    <br />
+    <div id="grid"></div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <div id="bar-chart-proto"></div>
+    <br />
+</div>

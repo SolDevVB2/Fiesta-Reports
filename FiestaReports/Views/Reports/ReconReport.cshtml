@@ -1,0 +1,174 @@
+﻿<script type="text/javascript">
+    var CanManage = @ViewBag.UserRole == 1 || @ViewBag.UserRole == 2;
+    var CanDelete = @ViewBag.UserRole == 1;
+</script>
+<link href="~/Content/KendoUI/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/KendoUI/styles/kendo.black.min.css" rel="stylesheet" />
+<link href="~/Content/KendoUI/styles/kendo.rtl.min.css" rel="stylesheet" />
+<script src="~/Content/KendoUI/js/jszip.min.js"></script>
+<script src="~/Content/KendoUI/js/kendo.all.min.js"></script>
+<script src="~/Scripts/html2canvas.min.js"></script>
+<script src="~/Scripts/jspdf.min.js"></script>
+<script src="@Url.Content("~/Scripts/Reports/ReconReport.js?G=" + new Random().Next())" ></script>
+
+<style>
+    .k-grid td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    label {
+        font-weight: normal;
+        margin-top: 5px;
+    }
+
+    b > label {
+        font-weight: bold;
+    }
+
+    .dtpicker {
+        width: 150px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .txtField {
+        width: 150px;
+        height: 30px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .numField {
+        width: 150px;
+        height: 30px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        text-align: right;
+    }
+
+    .label-value {
+        text-align: right;
+    }
+    .exportable-content {
+        margin: 20px;
+        padding: 30px;
+        width: 1200px;
+    }
+</style>
+<div id="example">
+    <br />
+    <h2>Recon Report</h2>
+    <br />
+    <div class="row">
+        <div class="col-md-2">
+            <b><label>Store</label></b>
+            <select id="cmbStores" class="form-control" multiple="multiple" onchange="javascript:Page.Report.Update()"></select>
+        </div>
+        <div class="col-md-2">
+            <b><label>Month</label></b>
+            <select id="cmbMonths" class="form-control" onchange="javascript:Page.Report.Update()">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <b><label>Year</label></b>
+            <select id="cmbYears" class="form-control" onchange="javascript:Page.Report.Update()">
+                <option>1980</option>
+                <option>1981</option>
+                <option>1982</option>
+                <option>1983</option>
+                <option>1984</option>
+                <option>1985</option>
+                <option>1986</option>
+                <option>1987</option>
+                <option>1988</option>
+                <option>1989</option>
+                <option>1990</option>
+                <option>1991</option>
+                <option>1992</option>
+                <option>1993</option>
+                <option>1994</option>
+                <option>1995</option>
+                <option>1996</option>
+                <option>1997</option>
+                <option>1998</option>
+                <option>1999</option>
+                <option>2000</option>
+                <option>2001</option>
+                <option>2002</option>
+                <option>2003</option>
+                <option>2004</option>
+                <option>2005</option>
+                <option>2006</option>
+                <option>2007</option>
+                <option>2008</option>
+                <option>2009</option>
+                <option>2010</option>
+                <option>2011</option>
+                <option>2012</option>
+                <option>2013</option>
+                <option>2014</option>
+                <option>2015</option>
+                <option>2016</option>
+                <option>2017</option>
+                <option>2018</option>
+                <option>2019</option>
+                <option>2020</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <br />
+            <button class="btn btn-block btn-success" onclick="javascript: Page.Report.Export.Download(Page.Report.Export.Types.CSV,0)">
+                <i class="glyphicon glyphicon-export"></i>  Export ALL to <b>CSV</b>
+            </button>
+        </div>
+    </div>
+    <div id="ManageDataControls" style="display:none">
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                <h3>Filtered Data</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <br />
+            </div>
+            <div class="col-md-2">
+                @if (ViewBag.UserRole == 1)
+                {
+                    <br />
+                    <button class="btn btn-block btn-danger" onclick="javascript: Page.Report.DeleteAll()">
+                        <i class="glyphicon glyphicon-trash"></i>  Delete Data
+                    </button>
+                }
+            </div>
+            <div class="col-md-2">
+                <br />
+                <button class="btn btn-block btn-success" onclick="javascript: Page.Report.SaveAll()">
+                    <i class="glyphicon glyphicon-floppy-save"></i>  Save Edited Data
+                </button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="grid" style="">
+
+    </div>
+    <br />
+    <br />
+    <div id="bar-chart-proto"></div>
+    <br />
+</div>

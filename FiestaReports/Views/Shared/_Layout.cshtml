@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+<script>
+    $(document).ready(function () {
+        var u = "@Session["UserName"]";
+        if (u != null && u != '') {
+            $('#liLogin').hide();
+            $('#lblUser').html("You logged in as " + u);
+            //$('#liLogout').show();
+        }
+        else
+            $('#liLogin').show();
+           //$('#liLogout').hide();
+    });
+</script>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/ico" href="~/Images/favicon.ico">
+    <title>@ViewBag.Title - Fiesta </title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Fiesta Franchise Corporation", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                            
+            </div>           
+            <div class="navbar-collapse collapse">
+                <a href="#" id="glyphiconhome" onclick="location.href='@Url.Action("LoginView", "Account")'" class="navbar-brand"><span class="glyphicon glyphicon-home" ></span> Home</a>
+                <ul class="nav navbar-nav">                  
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="liLogin" style="display:none;">@Html.ActionLink("Log In", "LoginView", "Account")</li>
+                    <li><label id="lblUser" class="label label-default" style="font-size:small ; font-style:inherit"></label></li>                                     
+                    <li id="liLogout" style="display:none;">@Html.ActionLink("Log Out", "LogOut", "Home")</li>                                      
+                </ul>                
+            </div>
+        </div>
+    </div>
+    <div class="body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Fiesta Reports v22</p>
+        </footer>
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        /***  Page Load Eventt ***/
+
+        /***  showup Loggin user namet ***/
+        var u = "@Session["UserName"]";
+        if (u != null && u != '') {
+            $('#liLogin').hide();
+            $('#liLogout').show();            
+            $('#lblUser').html("You logged in as " + u);
+           
+        }
+        else {
+            $('#liLogin').show();
+        }
+           
+    });
+</script>

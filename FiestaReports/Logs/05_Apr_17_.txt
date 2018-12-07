@@ -1,0 +1,132 @@
+4/5/2017 6:56:12 AM: Service Start At 05 April 2017 06:56:12
+4/5/2017 6:56:12 AM: ================================================================================
+4/5/2017 6:57:14 AM: ================================================================================
+4/5/2017 6:57:14 AM: New File 05 April 2017 06:57:14 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx 
+4/5/2017 6:57:14 AM: ================================================================================
+4/5/2017 6:57:16 AM: The Compare Path is 
+4/5/2017 6:57:16 AM: The Compare Path is C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx
+4/5/2017 6:57:16 AM: The Compare Path is 2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx
+4/5/2017 6:57:16 AM: =============================================================================
+4/5/2017 6:57:16 AM: I am from ImportExcle
+4/5/2017 6:57:16 AM: Error: Value cannot be null.
+Parameter name: path
+4/5/2017 6:57:16 AM: =============================================================================
+4/5/2017 6:57:16 AM: =============================================================================
+4/5/2017 6:57:16 AM: I am from email notification
+4/5/2017 6:57:16 AM: Error: Incorrect syntax near 'FE4F'.
+4/5/2017 6:57:16 AM: =============================================================================
+4/5/2017 7:12:48 AM: ================================================================================
+4/5/2017 7:12:48 AM: Service Stop At 05 April 2017 07:12:48
+4/5/2017 7:12:48 AM: ================================================================================
+4/5/2017 7:15:09 AM: Service Start At 05 April 2017 07:15:09
+4/5/2017 7:15:09 AM: ================================================================================
+4/5/2017 7:16:11 AM: ================================================================================
+4/5/2017 7:16:11 AM: New File 05 April 2017 07:16:11 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx 
+4/5/2017 7:16:11 AM: ================================================================================
+4/5/2017 7:16:12 AM: I am the Compare Folder
+4/5/2017 7:16:12 AM: The Compare Path is 
+4/5/2017 7:16:12 AM: The watch path is C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx
+4/5/2017 7:16:12 AM: The name is 2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx
+4/5/2017 7:16:12 AM: =============================================================================
+4/5/2017 7:16:12 AM: I am from ImportExcle
+4/5/2017 7:16:12 AM: Error: Value cannot be null.
+Parameter name: path
+4/5/2017 7:16:12 AM: =============================================================================
+4/5/2017 7:16:12 AM: =============================================================================
+4/5/2017 7:16:12 AM: I am from email notification
+4/5/2017 7:16:12 AM: Error: Incorrect syntax near 'fe4f'.
+4/5/2017 7:16:12 AM: =============================================================================
+4/5/2017 7:24:51 AM: ================================================================================
+4/5/2017 7:24:51 AM: Service Stop At 05 April 2017 07:24:51
+4/5/2017 7:24:51 AM: ================================================================================
+4/5/2017 7:28:06 AM: Service Start At 05 April 2017 07:28:06
+4/5/2017 7:28:06 AM: ================================================================================
+4/5/2017 7:28:25 AM: ================================================================================
+4/5/2017 7:28:25 AM: New File 05 April 2017 07:28:25 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx 
+4/5/2017 7:28:25 AM: ================================================================================
+4/5/2017 7:28:25 AM: =============================================================================
+4/5/2017 7:28:25 AM: I am from ImportExcle
+4/5/2017 7:28:25 AM: Error: Object reference not set to an instance of an object.
+4/5/2017 7:28:25 AM: =============================================================================
+4/5/2017 7:28:25 AM: =============================================================================
+4/5/2017 7:28:25 AM: I am from email notification
+4/5/2017 7:28:25 AM: Error: Object reference not set to an instance of an object.
+4/5/2017 7:28:25 AM: =============================================================================
+4/5/2017 7:29:51 AM: ================================================================================
+4/5/2017 7:29:51 AM: Service Stop At 05 April 2017 07:29:51
+4/5/2017 7:29:51 AM: ================================================================================
+4/5/2017 7:40:28 AM: Service Start At 05 April 2017 07:40:28
+4/5/2017 7:40:28 AM: ================================================================================
+4/5/2017 7:40:51 AM: ================================================================================
+4/5/2017 7:40:51 AM: New File 05 April 2017 07:40:51 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx 
+4/5/2017 7:40:51 AM: ================================================================================
+4/5/2017 7:40:52 AM: I am the Compare FolderC:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\Compare\checkEFT
+4/5/2017 7:40:53 AM: The Compare Path is C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\Compare\checkEFT
+4/5/2017 7:40:53 AM: The watch path is C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx
+4/5/2017 7:40:53 AM: The name is 2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx
+4/5/2017 7:40:53 AM: =============================================================================
+4/5/2017 7:40:53 AM: I am from email notification
+4/5/2017 7:40:53 AM: Error: Incorrect syntax near 'fe4f'.
+4/5/2017 7:40:53 AM: =============================================================================
+4/5/2017 7:45:16 AM: ================================================================================
+4/5/2017 7:45:16 AM: New File 05 April 2017 07:45:16 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx 
+4/5/2017 7:45:16 AM: ================================================================================
+4/5/2017 7:45:17 AM: =============================================================================
+4/5/2017 7:45:17 AM: I am from ImportExcle
+4/5/2017 7:45:17 AM: Error: The Microsoft Office Access database engine cannot open or write to the file 'C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\Compare\checkEFT'. It is already opened exclusively by another user, or you need permission to view and write its data.
+4/5/2017 7:45:17 AM: =============================================================================
+4/5/2017 7:45:17 AM: =============================================================================
+4/5/2017 7:45:17 AM: I am from email notification
+4/5/2017 7:45:17 AM: Error: Incorrect syntax near 'fe4f'.
+4/5/2017 7:45:17 AM: =============================================================================
+4/5/2017 7:49:52 AM: ================================================================================
+4/5/2017 7:49:52 AM: Service Stop At 05 April 2017 07:49:52
+4/5/2017 7:49:52 AM: ================================================================================
+4/5/2017 7:55:32 AM: Service Start At 05 April 2017 07:55:32
+4/5/2017 7:55:32 AM: ================================================================================
+4/5/2017 7:56:12 AM: ================================================================================
+4/5/2017 7:56:12 AM: New File 05 April 2017 07:56:12 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx 
+4/5/2017 7:56:12 AM: ================================================================================
+4/5/2017 7:56:13 AM: =============================================================================
+4/5/2017 7:56:13 AM: I am from ImportExcle
+4/5/2017 7:56:13 AM: Error: The Microsoft Office Access database engine cannot open or write to the file 'C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\Compare\checkEFT'. It is already opened exclusively by another user, or you need permission to view and write its data.
+4/5/2017 7:56:13 AM: =============================================================================
+4/5/2017 7:56:14 AM: =============================================================================
+4/5/2017 7:56:14 AM: I am from email notification
+4/5/2017 7:56:14 AM: Error: Incorrect syntax near 'fe4f'.
+4/5/2017 7:56:14 AM: =============================================================================
+4/5/2017 7:57:17 AM: ================================================================================
+4/5/2017 7:57:17 AM: Service Stop At 05 April 2017 07:57:17
+4/5/2017 7:57:17 AM: ================================================================================
+4/5/2017 8:06:17 AM: Service Start At 05 April 2017 08:06:17
+4/5/2017 8:06:17 AM: ================================================================================
+4/5/2017 8:06:31 AM: ================================================================================
+4/5/2017 8:06:31 AM: New File 05 April 2017 08:06:31 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da.xlsx 
+4/5/2017 8:06:31 AM: ================================================================================
+4/5/2017 8:06:33 AM: =============================================================================
+4/5/2017 8:06:33 AM: I am from ImportExcle
+4/5/2017 8:06:33 AM: Error: The Microsoft Office Access database engine cannot open or write to the file 'C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\Compare\checkEFT'. It is already opened exclusively by another user, or you need permission to view and write its data.
+4/5/2017 8:06:33 AM: =============================================================================
+4/5/2017 8:06:33 AM: =============================================================================
+4/5/2017 8:06:33 AM: I am from email notification
+4/5/2017 8:06:33 AM: Error: Incorrect syntax near 'fe4f'.
+4/5/2017 8:06:33 AM: =============================================================================
+4/5/2017 8:07:34 AM: ================================================================================
+4/5/2017 8:07:35 AM: Service Stop At 05 April 2017 08:07:35
+4/5/2017 8:07:35 AM: ================================================================================
+4/5/2017 8:08:15 AM: Service Start At 05 April 2017 08:08:15
+4/5/2017 8:08:15 AM: ================================================================================
+4/5/2017 8:08:22 AM: ================================================================================
+4/5/2017 8:08:22 AM: New File 05 April 2017 08:08:22 Created On C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\EFT\2882fe4f-c639-4b0b-bb45-35414b63a8da_some.xlsx 
+4/5/2017 8:08:22 AM: ================================================================================
+4/5/2017 8:08:23 AM: =============================================================================
+4/5/2017 8:08:23 AM: I am from ImportExcle
+4/5/2017 8:08:23 AM: Error: The Microsoft Office Access database engine cannot open or write to the file 'C:\Users\Gopi\Documents\Visual Studio 2015\Projects\FiestaReports\FiestaReports\UploadedFiles\Compare\checkEFT'. It is already opened exclusively by another user, or you need permission to view and write its data.
+4/5/2017 8:08:23 AM: =============================================================================
+4/5/2017 8:08:23 AM: =============================================================================
+4/5/2017 8:08:23 AM: I am from email notification
+4/5/2017 8:08:23 AM: Error: Incorrect syntax near 'fe4f'.
+4/5/2017 8:08:23 AM: =============================================================================
+4/5/2017 8:09:31 AM: ================================================================================
+4/5/2017 8:09:31 AM: Service Stop At 05 April 2017 08:09:31
+4/5/2017 8:09:31 AM: ================================================================================

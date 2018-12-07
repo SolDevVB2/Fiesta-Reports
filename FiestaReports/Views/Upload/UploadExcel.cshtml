@@ -1,0 +1,260 @@
+﻿
+@{
+    ViewBag.Title = "Upload Excel";
+}
+
+@section Scripts{
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var IsDUP = '@TempData["isDup"]';
+        var RptTable = '@TempData["ReportTable"]';
+        var OverWrite = '@TempData["OverwriteDuplicates"]';
+
+        $(document).ready(function () {
+            if (IsDUP.toLowerCase() == "true") {
+                var url = "GetDuplicates?rptName=" + RptTable + "&overwriteDuplicates=" + OverWrite;
+                window.open(url, '_blank');
+            }
+        });
+        function FillHiddenCheckbox(nameReport) {
+            var value = document.getElementById('chkOverwrite' + nameReport).checked;
+            $("#hdnOverwrite" + nameReport).val(value);
+        }
+        $(".btnUpload").click(function (event) {
+            var nameReport = $(this).attr('nameReport');
+            FillHiddenCheckbox(nameReport);
+        });
+    </script>
+}
+<div class="container">
+    <br />
+    <h4><strong>Note:</strong> Upload the Excel files here</h4>
+    <hr />
+    <div class="alert alert-info">
+        <strong>Info!</strong> Upload each report according to their category.
+    </div>
+    @if ((TempData["ExcelMissing_Message"]) != null)
+    {
+        <div class="alert alert-danger" id="ExcelMissing">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Warning!</strong> @TempData["ExcelMissing_Message"]
+        </div>
+    }
+    @if ((TempData["MessageException"]) != null)
+    {
+        <div class="alert alert-warning" id="MessageException">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Exception!</strong>  @TempData["MessageException"]
+        </div>
+    }
+    @if ((TempData["RP_Message"]) != null)
+    {
+        <div class="alert alert-success" id="RP_success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Success! RP File</strong> @TempData["RP_Message"]
+        </div>
+    }
+    @if ((TempData["AR_Message"]) != null)
+    {
+        <div class="alert alert-success" id="AR_success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Success! AR File</strong> @TempData["AR_Message"]
+        </div>
+    }
+    @if ((TempData["Recon_Message"]) != null)
+    {
+        <div class="alert alert-success" id="Recon_success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Success! Recon File</strong> @TempData["Recon_Message"]
+        </div>
+    }
+    @if ((TempData["DD_Message"]) != null)
+    {
+        <div class="alert alert-success" id="DD_success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Success! DD File</strong> @TempData["DD_Message"]
+        </div>
+    }
+    @if ((TempData["Commission_Message"]) != null)
+    {
+        <div class="alert alert-success" id="Commission_success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Success! Commission File</strong> @TempData["Commission_Message"]
+        </div>
+    }
+    @if ((TempData["EFT_Message"]) != null)
+    {
+        <div class="alert alert-success" id="EFT_success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <strong>Success! EFT File</strong> @TempData["EFT_Message"]
+        </div>
+
+    }
+    <div class="panel-group" id="accordion">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">RP File</a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Upload", "Upload", new { nameReport = "RP" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.Hidden("hdnOverwriteRP")
+                        <div style="margin-bottom :15px; margin-top: 15px">
+                            <label class="btn btn-default btn-file">
+                                <input type="file" name="file" id="file" style="display:inline-table;" accept=".csv">
+                            </label>
+                            <button type="submit" id="btnUploadRP" class="btn btn-primary btnUpload" name="btn_RP" nameReport="RP">Upload</button>
+                            <br />
+                            <br />
+                            <input type="checkbox" id="chkOverwriteRP" />
+                            <label for="chkOverwriteRP">
+                                Overwrite Duplicates
+                            </label>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">AR File</a>
+                </h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Upload", "Upload", new { nameReport = "AR" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.Hidden("hdnOverwriteAR")
+                        <div style="margin-bottom :15px; margin-top: 15px">
+                            <label class="btn btn-default btn-file">
+                                <input type="file" name="file" id="file" style="display:inline-table;" accept=".csv">
+                            </label>
+                            <button type="submit" id="btnUploadAR" class="btn btn-primary btnUpload" name="btn_AR" nameReport="AR">Upload</button>
+                            <br />
+                            <br />
+                            <input type="checkbox" id="chkOverwriteAR" />
+                            <label for="chkOverwriteAR">
+                                Overwrite Duplicates
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"> 
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Recon File</a>
+                </h4>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Upload", "Upload", new { nameReport = "RECON" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.Hidden("hdnOverwriteRECON")
+                        <div style="margin-bottom :15px; margin-top: 15px">
+                            <label class="btn btn-default btn-file">
+                                <input type="file" name="file" id="file" style="display:inline-table;" accept=".csv">
+                            </label>
+                            <button type="submit" id="btnUploadRECON" class="btn btn-primary btnUpload" name="btn_RECON" nameReport="RECON">Upload</button>
+                            <br />
+                            <br />
+                            <input type="checkbox" id="chkOverwriteRECON" />
+                            <label for="chkOverwriteRECON">
+                                Overwrite Duplicates
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">DD File</a>
+                </h4>
+            </div>
+            <div id="collapse4" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Upload", "Upload", new { nameReport = "DD" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.Hidden("hdnOverwriteDD")
+                        <div style="margin-bottom :15px; margin-top: 15px">
+                            <label class="btn btn-default btn-file">
+                                <input type="file" name="file" id="file" style="display:inline-table;" accept=".csv">
+                            </label>
+                            <button type="submit" id="btnUploadDD" class="btn btn-primary btnUpload" name="btn_DD" nameReport="DD">Upload</button>
+                            <br />
+                            <br />
+                            <input type="checkbox" id="chkOverwriteDD" />
+                            <label for="chkOverwriteDD">
+                                Overwrite Duplicates
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">Commission File</a>
+                </h4>
+            </div>
+            <div id="collapse5" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Upload", "Upload", new { nameReport = "COMMISSION" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                    <div style="margin-bottom :15px; margin-top: 15px">
+                        <label class="btn btn-default btn-file">
+                            <input type="file" name="file" id="file" style="display:inline-table" accept=".csv">
+                        </label>
+                        <button type="submit" id="btnUploadCommission" class="btn btn-primary btnUpload" name="btn_Commission" nameReport="Commission">Upload</button>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">EFT File</a>
+                </h4>
+            </div>
+            <div id="collapse6" class="panel-collapse collapse">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Upload", "Upload", new { nameReport = "EFT" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.Hidden("hdnOverwriteEFT")
+                        <div style="margin-bottom :15px; margin-top: 15px">
+                            <label class="btn btn-default btn-file">
+                                <input type="file" name="file" id="file" style="display:inline-table;" accept=".csv">
+                            </label>
+                            <button type="submit" id="btnUploadEFT" class="btn btn-primary btnUpload" name="btn_EFT" nameReport="EFT">Upload</button>
+                            <br />
+                            <br />
+                            <input type="checkbox" id="chkOverwriteEFT" />
+                            <label for="chkOverwriteEFT">
+                                Overwrite Duplicates
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

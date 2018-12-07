@@ -1,0 +1,605 @@
+﻿@model FiestaReports.Models.Employee
+
+@{
+    ViewBag.Title = "Manage Employee";
+}
+
+
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    var EmpId1 = 0;
+    var EmpId = 0;
+    function RoleChange(val) {
+        if (val == 1)
+            $('#dvSection').hide();
+        else
+            $('#dvSection').show();
+    }
+    
+    $(document).ready(function () {
+        /***   Page Load Event ***/
+        
+
+        /***   Returns Role Types ***/
+        $.ajax({
+            url: "@Url.Action("GetRoles", "Account")",
+            dataType: "json",
+            type: "GET",
+            error: function () {
+            },
+            success: function (data) {
+                $.each(data, function (i) {
+                    var optionhtml = '<label class="radio-inline">' +
+                                 '<input type="radio" name="optradio" class="cls_Roles" onclick="RoleChange(' + data[i].RoleId + ')" value="' + data[i].RoleId + '">' + data[i].RoleName + '</label>';
+                    $("#dvRoles").append(optionhtml);
+                });
+            }
+        });
+
+
+        /***   Returns Reports Types ***/
+        $.ajax({
+            url: "@Url.Action("GetReports", "Account")",
+            dataType: "json",
+            type: "GET",
+            error: function () {
+            },
+            success: function (data) {
+                $.each(data, function (i) {
+                    var optionhtml = '<label class="checkbox-inline">' +
+                                 '<input type="checkbox" class="cls_Report" value="' + data[i].ReportId + '">' + data[i].ReportName + '</label>';
+                    $("#dvReports").append(optionhtml);
+                });
+            }
+        });
+
+
+
+        /***   Returns States ***/
+        $.ajax({
+            url: "@Url.Action("GetStates", "Account")",
+            dataType: "json",
+            type: "GET",
+            error: function () {
+            },
+            success: function (data) {
+
+
+                $.each(data, function (i) {
+
+                    var optionhtml = '<option value="' +
+                data[i].Value + '">' + data[i].Text + '</option>';
+                    $("#dlStates1").append(optionhtml);
+                });
+            }
+        });
+       
+
+        $("#btnStNext").click(function () {
+            /***   States selection event ***/
+
+            var selectedOpts = $('#dlStates1 option:selected');
+            if (selectedOpts.length > 0) {
+                $('#dlStates2').append($(selectedOpts).clone());
+                $(selectedOpts).remove();
+                rearrangeList("#dlStates2");
+                ReloadStores(0, null);
+            }
+
+        });
+
+        $('#btnStPrevious').click(function (e) {
+            /***   States removal event ***/
+
+            var selectedOpts = $('#dlStates2 option:selected');
+            if (selectedOpts.length > 0) {
+                $('#dlStates1').append($(selectedOpts).clone());
+                $(selectedOpts).remove();
+                rearrangeList("#dlStates1");
+                $(selectedOpts).each(function () {
+                    var obj = {
+                        EmpId: 0,
+                        States: $(this).val()
+                    }
+                    console.log(obj);
+                    $.ajax({
+                        url: "@Url.Action("GetStores", "Account")",
+                        dataType: "json",
+                        data: obj,
+                        type: "POST",
+                        error: function () {
+                        },
+                        success: function (data) {
+
+                            $.each(data, function (i) {
+                                if ($("#dlStoresRight option[value='" + data[i].storeNo + "']").length > 0) {
+                                    jQuery("#dlStoresRight option").filter(function () {
+                                        return $.trim($(this).val()) == data[i].storeNo
+                                    }).remove();
+                                }
+                            });
+                        }
+                    });
+                });
+                ReloadStores(0, null);
+
+            }
+
+        });
+
+
+        $("#btnStoNext").click(function () {
+            /***   stores selection event ***/
+
+            var selectedOpts = $('#dlStoresLeft option:selected');
+            if (selectedOpts.length > 0) {
+                $('#dlStoresRight').append($(selectedOpts).clone());
+                $(selectedOpts).remove();
+                rearrangeList("#dlStoresRight");
+            }
+
+        });
+
+        $('#btnStoPrevious').click(function (e) {
+            /***   States removal event ***/
+
+            var selectedOpts = $('#dlStoresRight option:selected');
+            if (selectedOpts.length > 0) {
+                $('#dlStoresLeft').append($(selectedOpts).clone());
+                $(selectedOpts).remove();
+                rearrangeList("#dlStoresLeft");
+            }
+
+        });
+
+
+
+        $("#btnRegister").click(function () {
+            /***   Registration details submit event ***/
+
+            if (ValidateRegister()) {
+                $("#dvRSuccess").hide();
+                $("#dvRFailure").hide();
+                var obj = {
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    emailEmployee: $("#emailEmployee").val(),
+                    password: $("#password").val(),
+                }
+                $.ajax({
+                    url: "@Url.Action("RegisterEmployee", "Account")",
+                    data: obj,
+                    dataType: "json",
+                    type: "POST",
+                    error: function () {
+                    },
+                    success: function (result) {
+                        if (result.Status.indexOf("successfully") > 0) {
+                            $("#firstName").val('');
+                            $("#lastName").val('');
+                            $("#emailEmployee").val('');
+                            $("#password").val('');
+                            $("#confirmpassword").val('');
+                            $("#dvRSuccess").show();
+                            $("#lblRSuccess").text(result);
+                            $("#step1").hide();
+                            
+                            $('#lnametext').val(result.FirstName + " " + result.LastName);
+                            $('#lnametext1').val(result.FirstName + " " + result.LastName);
+                            EmpId = result.EmpId;
+                            $("#step2").show();
+                        }
+                        else {
+                            $('#emailEmployee').addClass('Red-border');
+                            $("#dvRFailure").show();
+                            $("#lblRFailure").text(result);
+                        }
+                    }
+                });
+            }
+        });
+      
+
+        $("#btnAssign").click(function () {
+            /***   Assigning States, Stores and Role to Employee ***/
+            var roleId = 0;
+            $('.cls_Roles').each(function () {
+
+                if ($(this).prop('checked') == true) {
+                    roleId = $(this).val();
+                }
+
+            });
+            var str_States = "";
+            var str_Stores = "";
+            $("#dlStates2 option").each(function () {
+                if (str_States == "")
+                    str_States = $(this).val();
+                else
+                    str_States += "," + $(this).val();
+            });
+            $("#dlStoresRight option").each(function () {
+                if (str_Stores == "")
+                    str_Stores = $(this).val();
+                else
+                    str_Stores += "," + $(this).val();
+            });
+            if (roleId == 0) {
+                $("#dvRoles").addClass('Red-border');
+            }
+            else {
+                $("#dvRoles").removeClass('Red-border');
+            }
+            if (EmpId > 0 && ((str_Stores != '' && str_States != '') || roleId == 1) && roleId > 0) {
+                var obj = {
+                    EmployeeId: EmpId,
+                    RoleId: roleId,
+                    States: str_States,
+                    Stores: str_Stores
+                }
+                console.log(obj);
+                $.ajax({
+                    url: "@Url.Action("AssignEmployee", "Account")",
+                    data: obj,
+                    dataType: "json",
+                    type: "POST",
+                    error: function () {
+                    },
+                    success: function (data) {
+                        $.ajax({
+                            url: "@Url.Action("GetEmployeeStores", "Account")" + "?EmpId=" + EmpId,
+                            data: obj,
+                        dataType: "json",
+                        type: "POST",
+                        error: function () {
+                        },
+                        success: function (data) {
+                            $.each(data, function (i) {
+
+                                var optionhtml = '<option value="' +
+                            data[i].storeNo + '">' + data[i].Store + '</option>';
+                                $("#dlStores1").append(optionhtml);
+                            });
+                            $('#step2').hide();
+                            $('#step3').show();
+                        }
+                    });
+
+                    }
+                });
+            }
+
+        });
+
+
+
+
+        //---------------------------
+
+
+      
+
+
+        $("#btnAssignReports").click(function () {
+            /***   Assigning Reports to Employee ***/
+            var Reports = [];
+            $('.cls_Report').each(function () {
+
+                if ($(this).prop('checked') == true) {
+                    Reports.push($(this).val());
+                }
+
+            });
+            console.log(EmpId);
+            console.log($("#dlStores1").val());
+            console.log(Reports);
+            if (EmpId > 0 && $("#dlStores1").val() != '' && Reports.length > 0) {
+                var obj = {
+                    EmployeeId: EmpId,
+                    lstStores: $("#dlStores1").val(),
+                    lstReports: Reports
+                }
+                console.log(obj);
+                $.ajax({
+                    url: "@Url.Action("AssignReports", "Account")",
+                    data: obj,
+                    dataType: "json",
+                    type: "POST",
+                    error: function () {
+                    },
+                    success: function (data) {
+                        window.location = "/Employee/ManageEmployee";
+
+                    }
+                });
+            }
+            else {
+                if ($("#dlStores1").val() == '')
+                    $('#dlStores1').addClass('Red-border');
+                if (Reports.length ==0)
+                    $('#dvReports').addClass('Red-border');
+            }
+
+        });
+
+
+    });
+
+    function rearrangeList(list) {
+        $(list).find("option").sort(byValue).appendTo(list);
+    }
+    function byValue(a, b) {
+        return a.text > b.text ? 1 : -1;
+    };
+
+    function ReloadStores(flag, objdata) {
+        /***   Reloading States after assigning to employee ***/
+        $("#dlStoresLeft").html('');
+        var str_States = "";
+        $("#dlStates2 option").each(function () {
+            if (str_States == "")
+                str_States = $(this).val();
+            else
+                str_States += "," + $(this).val();
+        });
+        if (str_States != "") {
+            var obj = {
+                EmpId: EmpId,
+                States: str_States
+            }
+            console.log(obj);
+            $.ajax({
+                url: "@Url.Action("GetStores", "Account")",
+                dataType: "json",
+                data: obj,
+                type: "POST",
+                error: function () {
+                },
+                success: function (data) {
+
+                    $.each(data, function (i) {
+                        if ($("#dlStoresRight option[value='" + data[i].storeNo + "']").length == 0) {
+                            var optionhtml = '<option value="' +
+                        data[i].storeNo + '">' + data[i].Store + '</option>';
+                            $("#dlStoresLeft").append(optionhtml);
+                        }
+                    });
+                    if (flag == 1) {
+                        $("#dlStoresRight").html('');
+                        console.log(objdata.lstStores);
+                        if (objdata.lstStores != null) {
+                            $.each(objdata.lstStores, function (i) {
+
+                                var optionhtml = '<option value="' +
+                            objdata.lstStores[i].storeNo + '">' + objdata.lstStores[i].Store + '</option>';
+                                $("#dlStoresRight").append(optionhtml);
+                                jQuery("#dlStoresLeft option").filter(function () {
+                                    return $.trim($(this).val()) == objdata.lstStores[i].storeNo
+                                }).remove();
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    function ValidateRegister() {
+        /***   Validating Registration fields of Employee ***/
+
+        var flag = true;
+        $('.register').each(function (i, obj) {
+            if ($(this).val() == '') {
+                flag = false;
+                $(this).addClass('Red-border');
+            }
+            else {
+                $(this).removeClass('Red-border');
+            }
+        });
+        if ($('#password').val().length < 5) {
+            flag = false;
+            $('#password').addClass('Red-border');
+        }
+        else {
+            $('#password').removeClass('Red-border');
+        }
+        if ($('#password').val() != $('#confirmpassword').val()) {
+            flag = false;
+            $('#confirmpassword').addClass('Red-border');
+        }
+        if ($('#emailEmployee').val() != '') {
+            var pattern1 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestainsurance.com$");
+            var pattern2 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestafranchise.com$");
+            if ($('#emailEmployee').val().match(pattern1) || $('#emailEmployee').val().match(pattern2)) {
+                // ... email is valid
+                $('#emailEmployee').removeClass('Red-border');
+            } else {
+                flag = false;
+                $('#emailEmployee').addClass('Red-border');
+            }
+        }
+        return flag;
+    }
+</script>
+
+<div class="container">
+    <div class="panel-group">
+        <div class="panel panel-primary" id="step1">
+            <div class="panel-heading"><strong>Register New Employee.</strong></div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    @*@using (Html.BeginForm("RegisterEmployee", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {*@
+                    <!-- @Html.AntiForgeryToken()
+                    <div class="col-sm-offset-3" style="margin-bottom:30px">@Html.ValidationSummary("", new { @class = "text-danger" })</div>-->
+                    <div class="alert alert-info">
+                        <strong>Info!..</strong>
+                        <strong>1.</strong> Use only Fiesta email to register. &nbsp;
+                        <strong>2.</strong> Password has to be minimum 5 characters in length.
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.firstName, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.firstName, new { @class = "form-control register" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.lastName, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.lastName, new { @class = "form-control register" })
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.emailEmployee, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.emailEmployee, new { @class = "form-control register" })
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.password, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-8">
+                            @Html.PasswordFor(m => m.password, new { @class = "form-control register" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.confirmpassword, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-8">
+                            @Html.PasswordFor(m => m.confirmpassword, new { @class = "form-control register" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <div style="margin-left:470px">
+                            <button type="button" class="btn btn-primary" id="btnRegister">
+                                <span class="glyphicon glyphicon-registration-mark"></span> Register
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <br />
+                    </div>
+                    <div class="alert alert-success" id="dvRSuccess" style="display:none;">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>Success!..</strong> <label id="lblRSuccess" style="font: italic"></label>
+                    </div>
+                    <div class="alert alert-danger" id="dvRFailure" style="display:none;">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>Warning!..</strong> <label id="lblRFailure"></label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-primary"  id="step2" style="display:none;">
+            <div class="panel-heading"><strong>Assign Store and Role</strong></div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="lname" class="col-md-3 control-label">Name</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="lnametext" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="role" class="col-md-3 control-label">Employee Role</label>
+
+                        <div class="col-md-8" id="dvRoles">
+                        </div>
+                    </div>
+                    <div id="dvSection">
+                        <div class="form-group">
+                            <label for="state" class="col-md-3 control-label">State</label>
+                            <div class="col-md-3">
+                                <select multiple class="form-control" id="dlStates1" style="height:150px;"></select>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" id="btnStNext" style="width:100%;margin-top:30px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></button>
+                                <button type="button" id="btnStPrevious" style="width:100%;margin-top:25px; margin-bottom:25px" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                            </div>
+                            <div class="col-md-3">
+                                <select multiple class="form-control" id="dlStates2" style="height:150px;"></select>
+                                `
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="report" class="col-md-3 control-label">Store</label>
+                            <div class="col-md-3">
+                                <select multiple class="form-control" id="dlStoresLeft" style="height:150px;"></select>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" id="btnStoNext" style="width:100%;margin-top:30px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></button>
+                                <button type="button" id="btnStoPrevious" style="width:100%;margin-top:25px; margin-bottom:25px" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                            </div>
+                            <div class="col-md-3">
+                                <select multiple class="form-control" id="dlStoresRight" style="height:150px;"></select>
+                                `
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div style="margin-left:310px">
+                            <button type="button" class="btn btn-primary" id="btnAssign">
+                                <span class="glyphicon glyphicon-registration-mark"></span> Assign
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel panel-primary"  id="step3" style="display:none;">
+            <div class="panel-heading"><strong>Assign Reports</strong></div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="lname" class="col-md-3 control-label">Name</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="lnametext1"disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="report" class="col-md-3 control-label">Store</label>
+
+                        <div class="col-md-8">
+                            <select multiple class="form-control" id="dlStores1"></select>
+                            `
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="role" class="col-md-3 control-label">Reports Accessble</label>
+
+                        <div class="col-md-8" id="dvReports">
+                           
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div style="margin-left:310px">
+                            <button type="button" class="btn btn-primary" id="btnAssignReports">
+                                <span class="glyphicon glyphicon-registration-mark"></span> Assign
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,429 @@
+﻿@model FiestaReports.Models.Fiesta_Employee
+@{
+    var isAdmin = false;
+    if (ViewBag.IsAdmin != null)
+    {
+        isAdmin = true;
+    }
+}
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Role and stores</h4>
+    </div>
+    <div class="modal-body" >
+        @{if (isAdmin)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="alert alert-info col-md-12">National users have acces to all stores and reports!</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-1 col-md-offset-1">
+                    <label for="fillname">Name</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control col-md-2" id="txtFullName" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-2 text-right">
+                            <label for="role" class="control-label">Employee Role</label>
+                        </div>
+
+                <div id="divRoles" class="col-md-9">
+                </div>
+            </div>
+            <div id="statesAssignment">
+                <div class="form-group row">
+                    <div class="col-md-1 col-md-offset-1">
+                        <label for="state" class="control-label">State</label>
+                    </div>
+
+                    <div class="col-md-4">
+                        <select multiple size="6" class="form-control" id="ddlAvailableStates"></select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" id="btnAddState" style="width:35px" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></button>
+                        <button type="button" id="btnRemoveState" style="width:35px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                    </div>
+                    <div class="col-md-4">
+                        <select multiple size="6" class="form-control" id="ddlTakenStates"></select>
+                        `
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1 col-md-offset-1">
+                                <label for="report" class="control-label">Store</label>
+                            </div>
+                    <div class="col-md-4">
+                        <select multiple size="6" class="form-control" id="ddlAvailableStores"></select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" id="btnAddStore" style="width:35px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></button>
+                        <button type="button" id="btnStoPrevious" style="width:35px;" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                    </div>
+                    <div class="col-md-4">
+                        <select multiple size="6" class="form-control" id="ddlTakenStores"></select>
+                        
+                    </div>
+                </div>
+            </div>
+        </form>
+            } }
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        @{if (!isAdmin)
+            {
+        <button type="button" class="btn btn-primary" id="btnSaveEmpStates">Save changes</button>
+            }
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    var EmpId = 0;
+
+    function LoadEmpStores(email) {
+
+        if (email != '') {
+            $("#ddlTakenStates").html('');
+
+            var obj = { Email: email }
+            $.ajax({
+                url: "@Url.Action("GetEmployeeByEmail", "Account")",
+                data: obj,
+                dataType: "json",
+                type: "POST",
+                error: function () {
+                    EmpId = 0;
+                },
+                success: function (data) {
+                    debugger;
+                    $("#ddlAvailableStores").html('');
+                    $('.avRoles').each(function () {
+                        $(this).prop('checked', false);
+                    });
+                    if (data != null) {
+                        if (data.EmpDetails != null) {
+                            if (data.EmpDetails.RoleId != null) {
+                                $('.avRoles').each(function () {
+                                    if ($(this).val() == data.EmpDetails.RoleId) {
+                                        $(this).prop('checked', true);
+                                    }
+                                });
+                            }
+                            if (data.lstStates != null) {
+                                $.each(data.lstStates, function (i) {
+                                    var optionhtml = '<option value="' +
+                                        data.lstStates[i].Value + '">' + data.lstStates[i].Text + '</option>';
+                                    $("#ddlTakenStates").append(optionhtml);
+                                    jQuery("#ddlAvailableStates option").filter(function () {
+                                        return $.trim($(this).val()) == data.lstStates[i].Value
+                                    }).remove();
+                                });
+                                LoadStores(1, data);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    $("#btnSaveEmpStates").click(function () {
+        var roleId = 0;
+        $('.avRoles').each(function () {
+
+            if ($(this).prop('checked') == true) {
+                roleId = $(this).val();
+            }
+
+        });
+        var str_States = "";
+        var str_Stores = "";
+        $("#ddlTakenStates option").each(function () {
+            if (str_States == "")
+                str_States = $(this).val();
+            else
+                str_States += "," + $(this).val();
+        });
+        $("#ddlTakenStores option").each(function () {
+            if (str_Stores == "")
+                str_Stores = $(this).val();
+            else
+                str_Stores += "," + $(this).val();
+        });
+        if (roleId == 0) {
+            $("#divRoles").addClass('Red-border');
+        }
+        else {
+            $("#divRoles").removeClass('Red-border');
+        }
+
+        if (str_States == '') {
+            $("#ddlTakenStates").addClass('Red-border');
+        } else {
+            $("#ddlTakenStates").removeClass('Red-border');
+        }
+
+        if (str_Stores == '') {
+            $("#ddlTakenStores").addClass('Red-border');
+        } else {
+            $("#ddlTakenStores").removeClass('Red-border');
+        }
+
+        if (EmpId > 0 && ((str_Stores != '' && str_States != '') || roleId == 1) && roleId > 0) {
+            var obj = {
+                EmployeeId: EmpId,
+                RoleId: roleId,
+                States: str_States,
+                Stores: str_Stores
+            }
+            $.ajax({
+                url: "@Url.Action("AssignEmployee", "Account")",
+                data: obj,
+                dataType: "json",
+                type: "POST",
+                error: function () {
+                },
+                success: function (data) {
+                    $.ajax({
+                        url: "@Url.Action("GetEmployeeStores", "Account")" + "?EmpId=" + EmpId,
+                        data: obj,
+                        dataType: "json",
+                        type: "POST",
+                        error: function () {
+                        },
+                        success: function (data) {
+                            $('#employees').DataTable().ajax.reload();
+                            $('#empStoresModal').modal('hide');
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    function ValidateRol(val) {
+        if (val == 1)
+            $('#statesAssignment').hide();
+        else
+            $('#statesAssignment').show();
+    }
+
+    function AddState() {
+        var selectedOpts = $('#ddlAvailableStates option:selected');
+        if (selectedOpts.length > 0) {
+            $('#ddlTakenStates').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            ReorderList("#ddlTakenStates");
+            LoadStores(0, null);
+        }
+    };
+
+    function RemoveState() {
+        var selectedOpts = $('#ddlTakenStates option:selected');
+        if (selectedOpts.length > 0) {
+            $('#ddlAvailableStates').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            ReorderList("#ddlAvailableStates");
+            $(selectedOpts).each(function () {
+                var obj = {
+                    EmpId: 0,
+                    States: $(this).val()
+                }
+                $.ajax({
+                    url: "@Url.Action("GetStores", "Account")",
+                    dataType: "json",
+                    data: obj,
+                    type: "POST",
+                    error: function () {
+                    },
+                    success: function (data) {
+                        $.each(data, function (i) {
+                            if ($("#ddlTakenStores option[value='" + data[i].storeNo + "']").length > 0) {
+                                jQuery("#ddlTakenStores option").filter(function () {
+                                    return $.trim($(this).val()) == data[i].storeNo
+                                }).remove();
+                            }
+                        });
+                    }
+                });
+            });
+            LoadStores(0, null);
+        };
+    };
+
+    function AddStore() {
+        var selectedOpts = $('#ddlAvailableStores option:selected');
+        if (selectedOpts.length > 0) {
+            $('#ddlTakenStores').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            ReorderList("#ddlTakenStores");
+        }
+    };
+
+    function RemoveStore() {
+        var selectedOpts = $('#ddlTakenStores option:selected');
+        if (selectedOpts.length > 0) {
+            $('#ddlAvailableStores').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            ReorderList("#ddlAvailableStores");
+        }
+    };
+
+    function ReorderList(list) {
+        $(list).find("option").sort(byValue).appendTo(list);
+    }
+    function byValue(a, b) {
+        return a.text > b.text ? 1 : -1;
+    };
+
+    function LoadStores(flag, objdata) {
+        $("#ddlAvailableStores").html('');
+        var str_States = "";
+        $("#ddlTakenStates option").each(function () {
+            if (str_States == "")
+                str_States = $(this).val();
+            else
+                str_States += "," + $(this).val();
+        });
+        if (str_States != "") {
+            var obj = {
+                EmpId: EmpId,
+                States: str_States
+            }
+            $.ajax({
+                url: "@Url.Action("GetStores", "Account")",
+                dataType: "json",
+                data: obj,
+                type: "POST",
+                error: function () {
+                },
+                success: function (data) {
+                    $.each(data, function (i) {
+                        if ($("#ddlTakenStores option[value='" + data[i].storeNo + "']").length == 0) {
+                            var optionhtml = '<option value="' +
+                                data[i].storeNo + '">' + data[i].Store + '</option>';
+                            $("#ddlAvailableStores").append(optionhtml);
+                        }
+                    });
+                    if (flag == 1) {
+                        $("#ddlTakenStores").html('');
+                        if (objdata.lstStores != null) {
+                            $.each(objdata.lstStores, function (i) {
+                                var optionhtml = '<option value="' +
+                                    objdata.lstStores[i].storeNo + '">' + objdata.lstStores[i].Store + '</option>';
+                                $("#ddlTakenStores").append(optionhtml);
+                                jQuery("#ddlAvailableStores option").filter(function () {
+                                    return $.trim($(this).val()) == objdata.lstStores[i].storeNo
+                                }).remove();
+                            });
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+ $(document).ready(function() {
+     var name = '@Model.FirstName';
+     var lastName = '@Model.LastName';
+     $('#txtFullName').val(name + " " + lastName);
+    EmpId = @Model.EmpId;
+        
+    $.ajax({
+        url: "@Url.Action("GetRoles", "Account")",
+        dataType: "json",
+        type: "GET",
+        error: function () {
+        },
+        success: function (data) {
+                var IsSelectable = false;
+                var optionhtml = '';
+                for (var i = 0; i < data.AllRoles.length; i++) {
+                    IsSelectable = false;
+                    for (var j = 0; j < data.SelectableRoles.length; j++) {
+                        if(data.AllRoles[i].RoleId ==  data.SelectableRoles[j].RoleId){
+                            IsSelectable = true;
+                            break;
+                        }
+                    }
+
+                    if(IsSelectable){
+                        optionhtml = '<label class="radio-inline">' +
+                                        '<input type="radio" name="optradio" class="avRoles" onclick="ValidateRol(' + data.AllRoles[i].RoleId + ')" value="' + data.AllRoles[i].RoleId + '">' + data.AllRoles[i].RoleName + '</label>';
+                    }else{
+                        optionhtml = '<label class="radio-inline">' +
+                                        '<input type="radio" name="optradio" class="avRoles" disabled="disabled" onclick="ValidateRol(' + data.AllRoles[i].RoleId + ')" value="' + data.AllRoles[i].RoleId + '">' + data.AllRoles[i].RoleName + '</label>';
+                    }
+                $("#divRoles").append(optionhtml);
+                }
+
+                //AFTER LOADING THE ROLES, LOAD THE STATES
+
+    $.ajax({
+        url: "@Url.Action("GetStates", "Account")",
+        dataType: "json",
+        type: "GET",
+        error: function () {
+        },
+        success: function (data) {
+            $.each(data, function (i) {
+                var optionhtml = '<option value="' +
+                    data[i].Value + '">' + data[i].Text + '</option>';
+                $("#ddlAvailableStates").append(optionhtml);
+            });
+                    // AFTER LOADING THE STATES, LOAD THE STORES
+                    LoadEmpStores('@Model.EmailAddress');
+        }
+    });
+
+
+            }
+        });
+
+    $("#btnAddState").click(function () {
+        AddState();
+    });
+
+    $("#ddlAvailableStates").on("dblclick", function () {
+        AddState();
+    });
+
+    $('#btnRemoveState').click(function (e) {
+        RemoveState();
+    });
+
+    $("#ddlTakenStates").on("dblclick", function () {
+        RemoveState();
+    });
+
+    $("#btnAddStore").click(function () {
+        AddStore();
+    });
+
+    $('#btnStoPrevious').click(function (e) {
+        RemoveStore();
+    });
+
+    $("#ddlAvailableStores").on("dblclick", function () {
+        AddStore();
+    });
+
+    $("#ddlTakenStores").on("dblclick", function () {
+        RemoveStore();
+    });
+
+});
+
+</script>

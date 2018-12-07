@@ -1,0 +1,207 @@
+﻿@{
+    ViewBag.Title = "ManageStores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        /***   Page Load Event ***/
+        LoadStores();
+        
+        $("#txtStoreNo").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                // Allow: Ctrl+A, Command+A
+                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+        /***   Returns all the States ***/
+        $.ajax({
+            url: "@Url.Action("GetStates", "Account")",
+            dataType: "json",
+            type: "GET",
+            error: function () {
+            },
+            success: function (data) {
+
+                var optionhtml = '<option value="0">Select State</option>';
+                $("#dlStates").append(optionhtml);
+                $.each(data, function (i) {
+
+                    optionhtml = '<option value="' +
+                data[i].Value + '">' + data[i].Text + '</option>';
+                    $("#dlStates").append(optionhtml);
+                });
+            }
+        });
+
+
+        $('#btnSubmit').click(function (e) {
+            /***   Submitting Store details  ***/
+
+            if (ValidateStateInfo()) {
+                var obj = {
+                    StateId: $("#dlStates").val(),
+                    StoreNumber: $("#txtStoreNo").val(),
+                    Address: $("#txtAddress").val(),
+                    City: $("#txtCity").val(),
+                    ZipCode: $("#txtZipCode").val()
+                }
+                $.ajax({
+                    url: "@Url.Action("AddStore", "Store")",
+                    dataType: "json",
+                    data: obj,
+                    type: "POST",
+                    error: function () {
+                    },
+                    success: function (data) {
+                        if (data != "") {
+                            $("#store_failure").show();
+                            $("#store_success").hide();
+                        }
+                        else {
+                            $("#store_success").show();
+                            $("#store_failure").hide();
+                            ClearControls();
+                            $('#stores').DataTable().ajax.reload();
+                        }
+                    }
+                });
+            }
+
+        });
+    });
+    function ValidateStateInfo() {
+        /***   validating Store submission fields  ***/
+
+        var flag = true;
+        $('#dlStates').removeClass('Red-border');
+        $('#txtStoreNo').removeClass('Red-border');
+        $('#txtCity').removeClass('Red-border');
+        if ($("#dlStates").val() == null || $("#dlStates").val() == "" || $("#dlStates").val() == "0") {
+            flag = false;
+            $('#dlStates').addClass('Red-border');
+        }
+        if ($("#txtStoreNo").val() == "") {
+            flag = false;
+            $('#txtStoreNo').addClass('Red-border');
+        }
+        else if ($("#txtStoreNo").val().length != 3) {
+            flag = false;
+            $('#txtStoreNo').addClass('Red-border');
+        }
+        if ($("#txtCity").val() == "") {
+            flag = false;
+            $('#txtCity').addClass('Red-border');
+        }
+        return flag;
+    }
+    
+    function ClearControls() {
+        $("#dlStates").val(0),
+        $("#txtStoreNo").val(''),
+        $("#txtAddress").val(''),
+        $("#txtCity").val(''),
+        $("#txtZipCode").val('')
+    }
+
+    function LoadStores() {
+        $('#stores').DataTable({
+            ajax:{ 
+                url:"@Url.Action("GetAllStores", "Store")",
+            dataSrc: ''
+        },
+            columns: [
+                { data: 'StoreNo' },
+                { data: 'Street' },
+                { data: 'State' },
+                { data: 'City' },
+                { data: 'ZipCode' }
+            ]
+    });
+}
+</script>
+<div class="container">
+    <h3>Manage stores</h3>
+    <p></p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Add New Store</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <form class="form-inline">
+                        <div>
+                            <label class="sr-only" for="exampleSelect1">select State</label>
+                            <select class="form-control mb-2 mr-sm-2 mb-sm-0" id="dlStates" placeholder="Select State"></select>
+
+                            <label class="sr-only" for="inlineFormInput">Store NUmber</label>
+                            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="txtStoreNo" placeholder="Store No. (Numbers Only)">
+
+                            <label class="sr-only" for="inlineFormInput">Street Address</label>
+                            <textarea type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="txtAddress" placeholder="Street Address" rows="3"></textarea>
+
+                            <label class="sr-only" for="inlineFormInput">City</label>
+                            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="txtCity" placeholder="City">
+
+                            <label class="sr-only" for="inlineFormInput">Zipcode</label>
+                            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="txtZipCode" placeholder="Zipcode">
+
+                            <button type="button" class="btn btn-primary" id="btnSubmit">Submit</button>
+                        </div>
+                        <div>
+                            <div class="alert alert-danger" id="store_failure" style="display:none">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                <strong>Warning!</strong> There is already a store with this store number                           
+                            </div>
+                            <div class="alert alert-success" id="store_success" style="display:none;">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                <strong>Success!</strong> Store is added
+                            </div>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>Current Stores</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <form style="padding-top:10px">
+                            <table id="stores" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Store No</th>
+                                        <th>Street</th>
+                                        <th>State</th>
+                                        <th>City</th>
+                                        <th>Zip Code</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>

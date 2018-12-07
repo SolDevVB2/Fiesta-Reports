@@ -1,0 +1,168 @@
+﻿@model FiestaReports.Models.Employee_Login
+@{
+    ViewBag.Title = "Login";
+}
+@section Scripts{
+
+    <script src="~/Scripts/Login.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<style>
+    .modal-header, h4, .close {
+        background-color: #5cb85c;
+        color: white !important;
+        text-align: center;
+        font-size: 30px;
+    }
+
+    .modal-footer {
+        background-color: #f9f9f9;
+    }
+</style>
+<script>
+  
+    $(document).ready(function () {
+        /***   Page Load Event ***/
+
+        $('#btnLogin').click(function (e) {
+
+            
+            /***   User Login Submit action ***/
+            $("#usrname").removeClass('Red-border');
+            $("#psw").removeClass('Red-border');
+            if ($("#usrname").val() != "" && $("#psw").val() != "") {
+                var pattern1 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestainsurance.com$");
+                var pattern2 = new RegExp("^[A-Za-z0-9_\\-\\.]+@@fiestafranchise.com$");
+                if ($('#usrname').val().match(pattern1) || $('#usrname').val().match(pattern2)) {
+                    var obj = {
+                        emailEmployee: $("#usrname").val(),
+                        password: $("#psw").val()
+                    }
+                                       
+
+                    console.log(obj);
+                    $.ajax({
+                        url: "@Url.Action("Login", "Account")",
+                        dataType: "json",
+                    data: obj,
+                    type: "POST",
+                        error: function (data) {
+                            alert("This is hit - Error: " + data);
+                    },
+                    success: function (data) {
+                        
+                        if (data != "") {
+                            $("#lblError").text(data);
+                        }
+                        else {
+                            location.reload();
+                        }
+                    }
+                });
+                } else {
+                    
+                    flag = false;
+                    $('#usrname').addClass('Red-border');
+                }
+               
+            }
+            else {
+                
+                if ($("#usrname").val() == "")
+                    $("#usrname").addClass('Red-border');
+                if ($("#psw").val() == "")
+                    $("#psw").addClass('Red-border');
+            }
+
+        });
+    });
+</script>
+
+<div class="container">
+    @*<button type="button" class="btn  btn-primary btn-lg" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-log-in"></span>    Login</button>*@
+    <div class="modal  fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                @*<div class="modal-header">
+                    <button type="button" class="close" onclick="window.location.href ='@Url.Action("Index","Home")'" data-dismiss="modal">&times;</button>
+                    <h4><b>Log In</b></h4>
+                </div>*@
+                <div class="modal-header" style="padding:35px 50px;">
+                    <button type="button" class="close" onclick="window.location.href ='@Url.Action("Index","Home")'" data-dismiss="modal">&times;</button>
+                    <h4><span class="glyphicon glyphicon-lock"></span> Login</h4>
+                </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="usrname"><span class="glyphicon glyphicon-user"></span> Email</label>
+                            <input type="email" class="form-control" id="usrname" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
+                            <input type="password" class="form-control" id="psw" placeholder="Enter password">
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" value="" checked>Remember me</label>
+                        </div>
+                        <button type="button" class="btn btn-success btn-block" id="btnLogin"><span class="glyphicon glyphicon-off"></span> Login</button>
+
+                        <div style="margin-top: 20px;
+    color: red;
+    font-weight: bold;">
+                            <label id="lblError"></label>
+                        </div>
+                    </form>
+                </div>
+                @*<div class="modal-body">
+                    @using (Html.BeginForm("LoginView", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <form id="loginform" class="form-horizontal" role="form">
+                            <p>Enter your credentials</p>
+                            <hr />
+                            <div class="col-md-offset-1">
+                                @Html.ValidationSummary("", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.emailEmployee, new { @class = "col-md-2 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.TextBoxFor(m => m.emailEmployee, new { @class = "form-control", @placeholder = "Enter your email." })
+                                    </div>
+                                </div>
+                                <div></div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.password, new { @class = "col-md-2 control-label" })
+                                    <div class="col-md-7">
+                                        @Html.PasswordFor(m => m.password, new { @class = "form-control", @placeholder = "Enter your password." })
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="login-remember" type="checkbox" name="remember" value="1"> Remember me
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <div style="margin-left:275px">
+                                        <button type="submit" class="btn btn-primary">
+                                            <span class="glyphicon glyphicon-log-in"></span> LOGIN
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>                           
+                        </form>
+                    }
+                </div>*@
+                @*<div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="window.location.href ='@Url.Action("Index","Home")'">Close</button>
+                    <div style="float:left; font-size: 100%; position: relative; top:-10px"><a href="@Url.Action("ForgotPassword", "Account")">Forgot password?</a></div>
+                    <br />                   
+                </div>*@
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger btn-default pull-left" onclick="window.location.href ='@Url.Action("Index","Home")'" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                    <p>Forgot <a href="#">Password?</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

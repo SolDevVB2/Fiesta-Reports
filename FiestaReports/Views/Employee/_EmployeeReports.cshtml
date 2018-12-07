@@ -1,0 +1,152 @@
+﻿@model FiestaReports.Models.EmployeeReports
+@{
+    @Html.HiddenFor(m => m.Employee.EmpId)
+    var fullName = string.Format("{0} {1}", Model.Employee.FirstName, Model.Employee.LastName);
+    var isAdmin = false;
+    if (ViewBag.IsAdmin != null)
+    {
+        isAdmin = true;
+    }
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="hStoreReps">Assign reports by store</h4>
+    </div>
+   
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <span class="hidden alert alert-danger col-md-12" id="spMessage"></span>
+            </div>
+        </div>
+        @{if (isAdmin)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="alert alert-info col-md-12">National users have acces to all stores and reports!</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-1 col-md-offset-1">
+                            <label for="fillname">Name</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control col-md-2" id="txtFullName" disabled="disabled" value="@fullName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12" style="height:400px; width:800px; overflow-x:scroll; overflow-y:scroll;">
+                            <table id="tblReportsByStore">
+                                <tr>
+                                    <th class="text-center">Store No.</th>
+                                    @{foreach (var report in Model.Reports)
+                                        {
+                                            <th style="width:80px" class="text-center">@report.ReportName</th>
+                                        }}
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;color:#939393"> ◘ Select All</td>
+                                    @{foreach (var report in Model.Reports)
+                                    {
+                                            var chkId = string.Format("All_{0}", report.ReportId.ToString());
+                                            <td style="width:80px" class="text-center"><input class="chkAll" type="checkbox" id="@chkId" /></td>
+                                    }}
+                                </tr>
+                                @{foreach (var store in Model.Stores)
+                                {
+                                    <tr class="store" stnm="@store.StoreNo">
+                                            <td class="text-primary col-md-3"> @store.StoreNo - @store.City</td>
+                                        @{foreach (var report in Model.Reports)
+                                            {
+                                                var chkId = string.Format("{0}_{1}", store.StoreNo, report.ReportId.ToString());
+                                                var isAssigned = Model.EmpStoreReports.Any(x => x.StoreNo == store.StoreNo && x.ReportId == report.ReportId) ? "checked" : string.Empty;
+                                                    <td class="text-center"><input class="chkNormal" type="checkbox" id="@chkId" @isAssigned /></td>
+                                            }}
+                                    </tr>
+                                }}
+                            </table>
+                        </div>
+                    </div>
+                </form>
+    } }
+
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        @{ if (!isAdmin)
+            {
+                <button type="button" class="btn btn-primary" id="btnSaveReports">Assign reports</button>
+            }
+        }
+        
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnSaveReports").click(function () {
+            if (StoresWithoutReport() > 0) {
+                $("#spMessage").html('You should select at least one report by store!');
+                $("#spMessage").removeClass('hidden');
+                return;
+            }
+            var assignedReports = [];//new Array();
+            $('#tblReportsByStore input.chkNormal[type="checkbox"]:checked').each(function () {
+                assignedReports.push($(this).attr('id'));
+            });
+
+            debugger;
+            $.ajax({
+                url: "@Url.Action("AssignReports", "Employee")",
+                data: { "storeReports": assignedReports, "empId": $("#Employee_EmpId").val() },
+                dataType: "json",
+                type: "POST",
+                traditional: true,
+                error: function () {
+                },
+                success: function (result) {
+                    if (result != 'Success') {
+                        $("#spMessage").html('');
+                        $("#spMessage").html(result);
+                        $("#spMessage").removeClass('hidden');
+                        $("#btnSaveReports").prop('disabled', true);
+                    } else {
+                        $('#employees').DataTable().ajax.reload();
+                        $('#empReportsModal').modal('hide');
+                    }
+                }
+            });
+        });
+        $(".chkAll").change(function () {
+            var ReportId = this.id.replace('All_', '');
+            var Checked = this.checked;
+            $('#tblReportsByStore input.chkNormal[type="checkbox"]').each(function () {
+                var position = $(this).attr('id').indexOf("_" + ReportId);
+                if (position > 0) {
+                    $(this).attr("checked", Checked);
+                }
+            });
+        });
+    });
+
+    function StoresWithoutReport() {
+        var storesNoReport = 0;
+        $('.store').each(function () {
+            var count = $(this).find(':checkbox:checked').length;
+            if (count > 0) {
+                $(this).removeClass('Red-border');
+            } else {
+                $(this).addClass('Red-border');
+                storesNoReport++;
+            }
+        });
+
+        return storesNoReport;
+    }
+</script>
